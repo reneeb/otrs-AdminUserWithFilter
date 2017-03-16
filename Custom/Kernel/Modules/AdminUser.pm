@@ -703,18 +703,6 @@ sub _Overview {
         my %FilterInfo = %{ $Filter{$FilterName} || {} };
         %FilterOpts    = %{ $FilterInfo{Search} || {} };
     }
-
-    for my $FilterKey ( sort { $Filter{$a}->{Priority} <=> $Filter{$b}->{Priority} } keys %Filter ) {
-        my $Class = $FilterKey eq $FilterName ? 'Active' : '';
-        $LayoutObject->Block(
-            Name => 'Tab',
-            Data => {
-                FilterName => $FilterKey,
-                LinkName   => $Filter{$FilterKey}->{LinkName},
-                Class      => $Class,
-            },
-        );
-    }
 # ---
 
     my %List = $UserObject->UserSearch(
@@ -767,8 +755,28 @@ sub _Overview {
         Data => \%Param,
     );
 
+# ---
+# PS
+# ---
+    for my $FilterKey ( sort { $Filter{$a}->{Priority} <=> $Filter{$b}->{Priority} } keys %Filter ) {
+        my $Class = $FilterKey eq $FilterName ? 'Active' : '';
+        $LayoutObject->Block(
+            Name => 'Tab',
+            Data => {
+                FilterName => $FilterKey,
+                LinkName   => $Filter{$FilterKey}->{LinkName},
+                Class      => $Class,
+            },
+        );
+    }
+# ---
+
     # get config object
-    my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+# ---
+# PS
+# ---
+#    my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+# ---
 
     if ( $ConfigObject->Get('SwitchToUser') ) {
         $ColSpan = 8;
