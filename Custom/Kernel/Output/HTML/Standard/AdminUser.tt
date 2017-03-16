@@ -1,6 +1,5 @@
 # --
-# AdminUser.tt - provides HTML form for AdminUser
-# Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2016 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -70,7 +69,13 @@
         <div class="WidgetSimple">
 [% RenderBlockStart("OverviewHeader") %]
             <div class="Header">
-                <h2>[% Translate("List") | html %]</h2>
+                <h2>
+                    [% IF Data.ListAll && Data.Limit && Data.ListAll > Data.Limit %]
+                        [% Translate("List (only %s shown - more available)", Data.SearchListSize) | html %]
+                    [% ELSE %]
+                        [% Translate("List (%s total)", Data.ListAll) | html %]
+                    [% END %]
+                    </h2>
             </div>
 [% RenderBlockEnd("OverviewHeader") %]
 [% RenderBlockStart("NoSearchTerms") %]
@@ -81,6 +86,9 @@
 
 [% RenderBlockStart("OverviewResult") %]
             <div class="Content">
+# ---
+# PS
+# ---
                 <div class="ControlRow">
                     <ul class="Tabs">
 [% RenderBlockStart("Tab") %]
@@ -90,6 +98,7 @@
 [% RenderBlockEnd("Tab") %]
                     </ul>
                 </div>
+# ---
                 <table class="DataTable" id="User">
                     <thead>
                         <tr>
@@ -114,7 +123,7 @@
                         </tr>
 [% RenderBlockEnd("NoDataFoundMsg") %]
 [% RenderBlockStart("OverviewResultRow") %]
-                        <tr>
+                        <tr [% IF Data.ValidID && Data.ValidID != 1 %]class="Invalid"[% END %]>
                             <td>
                                 <a class="AsBlock" href="[% Env("Baselink") %]Action=[% Env("Action") %];Subaction=Change;UserID=[% Data.UserID | uri %];Search=[% Data.Search | uri %]">[% Data.UserLogin | html %]</a>
                             </td>
@@ -148,14 +157,14 @@
             </div>
 
             <div class="Content">
-                <form action="[% Env("CGIHandle") %]" method="post" class="Validate PreventMultipleSubmits">
+                <form action="[% Env("CGIHandle") %]" enctype="multipart/form-data" method="post" class="Validate PreventMultipleSubmits">
                     <input type="hidden" name="Action" value="[% Env("Action") %]"/>
                     <input type="hidden" name="Subaction" value="[% Data.Action | html %]Action"/>
                     <input type="hidden" name="UserID" value="[% Data.UserID | html %]"/>
                     <input type="hidden" name="Search" value="[% Data.Search | html %]"/>
                     <fieldset class="TableLike">
 
-                        <label for="UserTitle">[% Translate("Title") | html %]:</label>
+                        <label for="UserTitle">[% Translate("Title or salutation") | html %]:</label>
                         <div class="Field">
                             <input type="text" name="UserTitle" id="UserTitle" value="[% Data.UserTitle | html %]" class="W50pc" maxlength="50"/>
                         </div>
@@ -297,6 +306,13 @@
                         </div>
                         <div class="Clear"></div>
 [% RenderBlockEnd("OutOfOffice") %]
+[% RenderBlockStart("RawHTML") %]
+                        <label>[% Translate(Data.Label) | html %]:</label>
+                        <div class="Field">
+                            [% Data.HTML %]
+                        </div>
+                        <div class="Clear"></div>
+[% RenderBlockEnd("RawHTML") %]
 [% RenderBlockEnd("Item") %]
                         <div class="Field SpacingTop">
                             <button class="Primary CallForAction" type="submit" value="[% Translate("Submit") | html %]"><span>[% Translate("Submit") | html %]</span></button>
