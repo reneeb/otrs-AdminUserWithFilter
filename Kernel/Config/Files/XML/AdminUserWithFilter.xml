@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<otrs_config version="2.0" init="Config">
+    <Setting Name="AdminUser::DefaultFilter" Required="1" Valid="1">
+        <Description Translatable="1">Default filter for the AdminUser dialog.</Description>
+        <Navigation>Core</Navigation>
+        <Value>
+            <Item ValueType="String" ValueRegex="">All</Item>
+        </Value>
+    </Setting>
+</otrs_config>
